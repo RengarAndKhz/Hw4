@@ -1,10 +1,16 @@
 import ij.ImagePlus;
 import ij.gui.NewImage;
+import ij.plugin.Converter;
+import ij.plugin.filter.Binary;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageConverter;
 import ij.process.ImageProcessor;
 
+import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by twang7 on 4/28/2016.
@@ -17,43 +23,56 @@ public class Indextable_Display implements PlugInFilter{
 
     @Override
     public void run(ImageProcessor imageProcessor) {
-        //imageProcessor.drawString("abcd", 100, 100);
-        //ImagePlus result = new ImagePlus("Color board");
-        //ImageProcessor resultProcessor = result.getProcessor();
-        ImagePlus result = NewImage.createRGBImage("Color board", 16*40, 16*40, 1, 0);
-        ImageConverter ic = new ImageConverter(result);
-        //ic.convertRGBtoIndexedColor(255);
-
+        ImagePlus result = NewImage.createRGBImage("Color board", 16*60, 16*60, 1, 0);
         //test.show();
-        ImageProcessor resultProcessor = result.getProcessor();
+        ImagePlus imagePlus = new ImagePlus("new", imageProcessor);
 
-        //int indexedColor = 0;
+        ImageConverter ic = new ImageConverter(imagePlus);
+        ic.convertToRGB();
+        ImageProcessor rgbProcessor = imagePlus.getProcessor();
+        ImageProcessor resultProcessor = result.getProcessor();
+        imagePlus.show();
+
         int w = resultProcessor.getWidth();
         int h = resultProcessor.getHeight();
         for (int i = 0; i < h; i++){
             for (int j = 0; j < w; j++){
-                if (i%40 == 0 && j%40 == 0){
+                if (i%60 == 0 && j%60 == 0){
                     for (int subi = 0; subi < 16; subi++){
                         for (int subj = 0; subj < 16; subj++){
                             resultProcessor.set(i+subi, j+subj, 0);
                         }
                     }
-                    //indexedColor ++;
                 }
             }
         }
 
-        /*
-        get the color from input image
-         */
-        IndexColorModel icm = (IndexColorModel) imageProcessor.getColorModel();
-        int pixBits = icm.getPixelSize();
-        int mapSize = icm.getMapSize();
-        //retrieve the current lookup tables for RGB
-        byte[] Rmap = new byte[mapSize]; icm.getRed(Rmap);
-        byte[] Gmap = new byte[mapSize]; icm.getGreen(Gmap);
-        byte[] Bmap = new byte[mapSize]; icm.getBlue()
-        resultProcessor.drawString("111", 0, 30);
+        Map<Integer, Integer> colorHis = new HashMap<Integer, Integer>();
+        Map<Integer, Integer> realValue = new HashMap<Integer, Integer>();
+        for (int i = 0; i < imageProcessor.getWidth(); i++){
+            for (int j = 0; j < imageProcessor.getHeight(); j++){
+                int tempColor = imageProcessor.get(i,j);
+                if (colorHis.containsKey(tempColor)) colorHis.put(tempColor, colorHis.get(tempColor) + 1);
+                else{
+                    colorHis.put(tempColor, 1);
+                }
+                if (!realValue.containsKey(tempColor)) realValue.put(tempColor, rgbProcessor.get(i, j));
+            }
+        }
+
+
+        for (Integer curr : colorHis.keySet()){
+            int y = (curr / 16)*60;
+            int x = (curr % 16)*60;
+            for (int i = 0; i < 16; i++){
+                for (int j = 0; j < 16; j++){
+                    resultProcessor.putPixel(x+i, y+j, realValue.get(curr));
+                }
+            }
+            resultProcessor.drawString(Integer.toString(curr)+"." + Integer.toString(colorHis.get(curr)), x, y + 30);
+        }
+
+
         result.show();
 
 
