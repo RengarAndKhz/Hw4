@@ -62,7 +62,7 @@ public class DFT_2D implements PlugInFilter {
         new ImagePlus("inverse", inverseProcessor).show();
     }
 
-    private static Complex[] getColumn(FloatProcessor fp, int x) {
+    private  Complex[] getColumn(FloatProcessor fp, int x) {
         Complex[] val = new Complex[fp.getHeight()];
         for(int y = 0; y < fp.getHeight(); y++){
             val[y] = new Complex(fp.getPixel(x, y), 0);
@@ -70,14 +70,14 @@ public class DFT_2D implements PlugInFilter {
 
         return val;
     }
-    private static Complex[] getColumn(Complex[][] g, int x) {
+    private  Complex[] getColumn(Complex[][] g, int x) {
         Complex[] val = new Complex[g.length];
         for(int y = 0; y < g.length; y++){
             val[y] = g[y][x];
         }
         return val;
     }
-    private static float[] displayToFloat(Complex[] c) {
+    private  float[] displayToFloat(Complex[] c) {
         float[] f = new float[c.length];
         for(int i = 0; i < c.length; i++){
             f[i] = (float) Math.sqrt(c[i].re*c[i].re + c[i].im*c[i].im);
@@ -92,7 +92,7 @@ public class DFT_2D implements PlugInFilter {
      * @param forward
      * @return
      */
-    public static Complex[] DFT(Complex[] g, boolean forward){
+    public  Complex[] DFT(Complex[] g, boolean forward){
         int M = g.length;
         double s = 1/ Math.sqrt(M);
         Complex[] G = new Complex[M];

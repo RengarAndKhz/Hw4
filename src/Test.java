@@ -1,4 +1,5 @@
 import ij.ImagePlus;
+import ij.plugin.filter.GaussianBlur;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import ij.plugin.FFT;
@@ -18,8 +19,13 @@ public class Test {
     final static double[][] lmsToRGB = new double[][]{{4.4679, -3.5873, 0.1193}, {-1.2186, 2.3809, -0.1624}, {0.0497, -0.2439, 1.2045}};
 
     public static void main(String[] args) {
-        FFT.fileName = "fuller.jpg";
-        System.out.print(FFT.fileName);
+        GaussianBlur gaussianBlur = new GaussianBlur();
+        float[][] kernel = gaussianBlur.makeGaussianKernel(3,0.001, 5);
+        for (int i = 0; i < kernel.length; i++){
+            for (int j = 0; j < kernel[0].length; j++){
+                System.out.println(kernel[i][j]);
+            }
+        }
 
     }
 }
