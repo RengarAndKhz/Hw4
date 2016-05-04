@@ -3,8 +3,6 @@ import ij.WindowManager;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
-import javafx.util.Pair;
-import sun.security.x509.RFC822Name;
 
 import java.awt.Color;
 import java.util.HashMap;
@@ -105,7 +103,7 @@ public class Color_Transfer implements PlugInFilter{
         for (int i = 0; i < sourceProcessor.getWidth(); i++){
             for (int j = 0; j < sourceProcessor.getHeight(); j++){
                 for (int subIndex = 0; subIndex < 3; subIndex++){
-                    meanOfLab[subIndex] += sourceImage.get(new Pair<>(i, j))[subIndex]/(h*w);
+                    meanOfLab[subIndex] += sourceImage.get(new Pair<Integer,Integer>(i, j))[subIndex]/(h*w);
                 }
             }
         }
@@ -127,7 +125,7 @@ public class Color_Transfer implements PlugInFilter{
         for (int i = 0; i < w; i++){
             for (int j = 0; j < h; j++){
                 for (int subIndex = 0; subIndex < 3; subIndex++){
-                    sqare[subIndex] += Math.pow(imageMap.get(new Pair<>(i, j))[subIndex] - mean[subIndex], 2)/(w*h);
+                    sqare[subIndex] += Math.pow(imageMap.get(new Pair<Integer,Integer>(i, j))[subIndex] - mean[subIndex], 2)/(w*h);
                 }
             }
         }
